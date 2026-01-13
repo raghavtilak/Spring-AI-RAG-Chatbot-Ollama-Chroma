@@ -1,0 +1,25 @@
+services:
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:v1.13.0
+    user: "0:0"
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage:z
+
+  app:
+    container_name: ragchatbot
+    build: .
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - qdrant
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+volumes:
+  qdrant_storage:
